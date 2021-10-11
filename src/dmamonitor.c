@@ -445,12 +445,14 @@ int main(int argc, char** argv)
         {"memmap", required_argument, NULL, 'm'},
         {"stack-save-key", required_argument, NULL, 'k'},
         {"stack-save-unique", required_argument, NULL, 'S'},
+        {"kvmi", required_argument, NULL, 'K'},
         {"help", no_argument, NULL, 'h'},
         {NULL, 0, NULL, 0}
     };
-    const char* opts = "d:i:j:a:r:soh";
+    const char* opts = "d:i:j:a:r:m:k:S:K:sowh";
     uint32_t domid = 0;
     char *domain = NULL;
+    char *kvmi = NULL;
     bool wait_for_cr3 = false;
     GSList *dma_list = NULL;
 
@@ -496,6 +498,9 @@ int main(int argc, char** argv)
         case 'S':
             stack_save_unique = strtoull(optarg, NULL, 0);
             break;
+        case 'K':
+            kvmi = optarg;
+            break;
         case 'h': /* fall-through */
         default:
             options();
@@ -511,7 +516,7 @@ int main(int argc, char** argv)
 
     setup_handlers();
 
-    if ( !setup_vmi(&vmi, domain, domid, NULL, true, false) )
+    if ( !setup_vmi(&vmi, domain, domid, NULL, kvmi, true, false) )
     {
         printf("Failed to enable LibVMI\n");
         return -1;
